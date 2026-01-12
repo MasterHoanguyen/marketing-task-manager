@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Công Việc Marketing</title>
+  <meta name="description" content="Ứng dụng quản lý công việc cho phòng Marketing">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <span class="logo-icon">📊</span>
+          <span class="logo-text">MarketFlow</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Tổng Quan</span>
+        </button>
+        <button class="nav-item" data-view="board">
+          <span class="nav-icon">📋</span>
+          <span>Bảng Kanban</span>
+        </button>
+        <button class="nav-item" data-view="calendar">
+          <span class="nav-icon">📅</span>
+          <span>Lịch Nội Dung</span>
+        </button>
+        <button class="nav-item" data-view="campaigns">
+          <span class="nav-icon">🚀</span>
+          <span>Chiến Dịch</span>
+        </button>
+        <button class="nav-item" data-view="team">
+          <span class="nav-icon">👥</span>
+          <span>Nhóm</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-section">
+        <div class="section-header">
+          <span>Chiến Dịch</span>
+          <button class="btn-icon" id="addCampaignBtn" title="Thêm chiến dịch">+</button>
+        </div>
+        <div class="campaign-list" id="campaignList">
+          <!-- Campaigns loaded here -->
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="avatar" id="currentUserAvatar">M</div>
+          <div class="user-details">
+            <span class="user-name" id="currentUserName">Nhóm Marketing</span>
+            <span class="user-role">Quản lý</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-left">
+          <h1 class="page-title" id="pageTitle">Bảng Kanban</h1>
+          <div class="campaign-badge" id="currentCampaignBadge">
+            <span class="campaign-dot"></span>
+            <span class="campaign-name">Tất Cả Chiến Dịch</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Tìm kiếm công việc...">
+            <span class="search-icon">🔍</span>
+          </div>
+          <div class="filter-group">
+            <select id="filterStatus" class="filter-select">
+              <option value="">Tất Cả Trạng Thái</option>
+              <option value="todo">Cần Làm</option>
+              <option value="in-progress">Đang Làm</option>
+              <option value="review">Đang Duyệt</option>
+              <option value="done">Hoàn Thành</option>
+            </select>
+            <select id="filterLabel" class="filter-select">
+              <option value="">Tất Cả Nhãn</option>
+              <option value="content">📝 Nội dung</option>
+              <option value="seo">🔍 SEO</option>
+              <option value="ads">📢 Quảng cáo</option>
+              <option value="social">📱 Mạng xã hội</option>
+              <option value="email">✉️ Email</option>
+              <option value="event">🎉 Sự kiện</option>
+              <option value="design">🎨 Thiết kế</option>
+              <option value="video">🎬 Video</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="addTaskBtn">
+            <span>+</span> Tạo Mới
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard View -->
+      <div class="view-container" id="dashboardView">
+        <div class="dashboard-content" id="dashboardContent">
+          <!-- Dashboard loaded by JS -->
+        </div>
+      </div>
+
+      <!-- Kanban Board View -->
+      <div class="view-container hidden" id="boardView">
+        <div class="kanban-board" id="kanbanBoard">
+          <div class="kanban-column" data-status="todo">
+            <div class="column-header">
+              <span class="column-title">📥 Cần Làm</span>
+              <span class="column-count" data-count="todo">0</span>
+            </div>
+            <div class="column-tasks" data-status="todo"></div>
+          </div>
+          <div class="kanban-column" data-status="in-progress">
+            <div class="column-header">
+              <span class="column-title">⚡ Đang Làm</span>
+              <span class="column-count" data-count="in-progress">0</span>
+            </div>
+            <div class="column-tasks" data-status="in-progress"></div>
+          </div>
+          <div class="kanban-column" data-status="review">
+            <div class="column-header">
+              <span class="column-title">👀 Đang Duyệt</span>
+              <span class="column-count" data-count="review">0</span>
+            </div>
+            <div class="column-tasks" data-status="review"></div>
+          </div>
+          <div class="kanban-column" data-status="done">
+            <div class="column-header">
+              <span class="column-title">✅ Hoàn Thành</span>
+              <span class="column-count" data-count="done">0</span>
+            </div>
+            <div class="column-tasks" data-status="done"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendar View -->
+      <div class="view-container hidden" id="calendarView">
+        <div class="calendar-header">
+          <button class="btn-icon" id="prevMonth">←</button>
+          <h2 class="calendar-title" id="calendarTitle">Tháng 1 2026</h2>
+          <button class="btn-icon" id="nextMonth">→</button>
+        </div>
+        <div class="calendar-grid" id="calendarGrid">
+          <!-- Calendar generated by JS -->
+        </div>
+      </div>
+
+      <!-- Campaigns View -->
+      <div class="view-container hidden" id="campaignsView">
+        <div class="campaigns-grid" id="campaignsGrid">
+          <!-- Campaigns loaded here -->
+        </div>
+      </div>
+
+      <!-- Team View -->
+      <div class="view-container hidden" id="teamView">
+        <div class="team-grid" id="teamGrid">
+          <!-- Team members loaded here -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Task Modal -->
+  <div class="modal" id="taskModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="taskModalTitle">Tạo Công Việc Mới</h2>
+        <button class="btn-icon modal-close" id="closeTaskModal">×</button>
+      </div>
+      <form id="taskForm">
+        <input type="hidden" id="taskId">
+        <div class="form-group">
+          <label for="taskTitle">Tiêu đề *</label>
+          <input type="text" id="taskTitle" required placeholder="Nhập tiêu đề công việc">
+        </div>
+        <div class="form-group">
+          <label for="taskDescription">Mô tả</label>
+          <textarea id="taskDescription" rows="3" placeholder="Thêm mô tả chi tiết..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskCampaign">Chiến dịch *</label>
+            <select id="taskCampaign" required></select>
+          </div>
+          <div class="form-group">
+            <label for="taskAssignee">Người phụ trách</label>
+            <select id="taskAssignee"></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskDueDate">Hạn hoàn thành</label>
+            <input type="date" id="taskDueDate">
+          </div>
+          <div class="form-group">
+            <label for="taskScheduledDate">Ngày lên lịch</label>
+            <input type="date" id="taskScheduledDate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskPriority">Độ ưu tiên</label>
+            <select id="taskPriority">
+              <option value="low">🟢 Thấp</option>
+              <option value="medium" selected>🟡 Trung bình</option>
+              <option value="high">🟠 Cao</option>
+              <option value="urgent">🔴 Khẩn cấp</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="taskStatus">Trạng thái</label>
+            <select id="taskStatus">
+              <option value="todo">Cần Làm</option>
+              <option value="in-progress">Đang Làm</option>
+              <option value="review">Đang Duyệt</option>
+              <option value="done">Hoàn Thành</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Nhãn</label>
+          <div class="labels-grid" id="taskLabels">
+            <label class="label-checkbox"><input type="checkbox" value="content"><span class="label-tag content">📝 Nội
+                dung</span></label>
+            <label class="label-checkbox"><input type="checkbox" value="seo"><span class="label-tag seo">🔍
+                SEO</span></label>
+            <label class="label-checkbox"><input type="checkbox" value="ads"><span class="label-tag ads">📢 Quảng
+                cáo</span></label>
+            <label class="label-checkbox"><input type="checkbox" value="social"><span class="label-tag social">📱
+                MXH</span></label>
+            <label class="label-checkbox"><input type="checkbox" value="email"><span class="label-tag email">✉️
+                Email</span></label>
+            <label class="label-checkbox"><input type="checkbox" value="event"><span class="label-tag event">🎉 Sự
+                kiện</span></label>
+            <label class="label-checkbox"><input type="checkbox" value="design"><span class="label-tag design">🎨 Thiết
+                kế</span></label>
+            <label class="label-checkbox"><input type="checkbox" value="video"><span class="label-tag video">🎬
+                Video</span></label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="deleteTaskBtn" style="display:none">Xóa</button>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="cancelTaskBtn">Hủy</button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Campaign Modal -->
+  <div class="modal" id="campaignModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="campaignModalTitle">Tạo Chiến Dịch Mới</h2>
+        <button class="btn-icon modal-close" id="closeCampaignModal">×</button>
+      </div>
+      <form id="campaignForm">
+        <input type="hidden" id="campaignId">
+        <div class="form-group">
+          <label for="campaignName">Tên chiến dịch *</label>
+          <input type="text" id="campaignName" required placeholder="Tên chiến dịch">
+        </div>
+        <div class="form-group">
+          <label for="campaignDescription">Mô tả</label>
+          <textarea id="campaignDescription" rows="2" placeholder="Mô tả chiến dịch"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="campaignStartDate">Ngày bắt đầu *</label>
+            <input type="date" id="campaignStartDate" required>
+          </div>
+          <div class="form-group">
+            <label for="campaignEndDate">Ngày kết thúc *</label>
+            <input type="date" id="campaignEndDate" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="campaignBudget">Ngân sách (VNĐ)</label>
+            <input type="number" id="campaignBudget" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="campaignColor">Màu sắc</label>
+            <input type="color" id="campaignColor" value="#6366f1">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="campaignStatus">Trạng thái</label>
+          <select id="campaignStatus">
+            <option value="planning">📋 Lên kế hoạch</option>
+            <option value="active">🚀 Đang chạy</option>
+            <option value="paused">⏸️ Tạm dừng</option>
+            <option value="completed">✅ Hoàn thành</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="deleteCampaignBtn" style="display:none">Xóa</button>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="cancelCampaignBtn">Hủy</button>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
