@@ -430,18 +430,35 @@ const App = {
     // Lưu chiến dịch
     async saveCampaign() {
         const campaignId = document.getElementById('campaignId').value;
+        const submitBtn = document.querySelector('#campaignForm button[type="submit"]');
+
+        // Get values
+        const startDate = document.getElementById('campaignStartDate').value;
+        const endDate = document.getElementById('campaignEndDate').value;
+        const budgetInput = document.getElementById('campaignBudget').value;
+
+        // Validation
+        if (new Date(startDate) > new Date(endDate)) {
+            UI.toast('Ngày kết thúc phải sau ngày bắt đầu', 'error');
+            return;
+        }
 
         const data = {
             name: document.getElementById('campaignName').value,
             description: document.getElementById('campaignDescription').value,
-            startDate: document.getElementById('campaignStartDate').value,
-            endDate: document.getElementById('campaignEndDate').value,
-            budget: parseInt(document.getElementById('campaignBudget').value) || 0,
+            startDate,
+            endDate,
+            budget: budgetInput ? parseInt(budgetInput) : 0,
             color: document.getElementById('campaignColor').value,
             status: document.getElementById('campaignStatus').value
         };
 
         try {
+            // Show loading
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Đang lưu...';
+            submitBtn.disabled = true;
+
             if (campaignId) {
                 await API.campaigns.update(campaignId, data);
                 UI.toast('Đã cập nhật chiến dịch', 'success');
@@ -457,7 +474,14 @@ const App = {
                 await this.renderCampaignsView();
             }
         } catch (error) {
-            UI.toast('Không thể lưu chiến dịch', 'error');
+            console.error('Save campaign error:', error);
+            UI.toast(error.message || 'Không thể lưu chiến dịch', 'error');
+        } finally {
+            // Reset loading
+            if (submitBtn) {
+                submitBtn.textContent = 'Lưu';
+                submitBtn.disabled = false;
+            }
         }
     },
 

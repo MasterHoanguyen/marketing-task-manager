@@ -326,6 +326,8 @@ const Board = {
     // Lưu task
     async saveTask() {
         const taskId = document.getElementById('taskId').value;
+        const submitBtn = document.querySelector('#taskForm button[type="submit"]');
+
         const labels = Array.from(document.querySelectorAll('#taskLabels input:checked'))
             .map(input => input.value);
 
@@ -343,6 +345,11 @@ const Board = {
         };
 
         try {
+            // Show loading
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Đang lưu...';
+            submitBtn.disabled = true;
+
             if (taskId) {
                 await API.tasks.update(taskId, data);
                 UI.toast('Đã cập nhật công việc', 'success');
@@ -354,7 +361,14 @@ const Board = {
             UI.hideModal('taskModal');
             await this.loadTasks();
         } catch (error) {
-            UI.toast('Không thể lưu công việc', 'error');
+            console.error('Save task error:', error);
+            UI.toast(error.message || 'Không thể lưu công việc', 'error');
+        } finally {
+            // Reset loading
+            if (submitBtn) {
+                submitBtn.textContent = 'Lưu';
+                submitBtn.disabled = false;
+            }
         }
     },
 
